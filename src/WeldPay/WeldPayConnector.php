@@ -4,8 +4,8 @@ namespace WeldPaySdk\WeldPay;
 
 use GuzzleHttp\Client;
 use WeldPaySdk\Components\Transaction;
+use WeldPaySdk\Components\CheckStatusResponse;
 use WeldPaySdk\Exceptions\WeldPayMethodCallException;
-use WeldPaySdk\WeldPay\WeldPayConfig;
 
 class WeldPayConnector
 {
@@ -32,8 +32,9 @@ class WeldPayConnector
         $this->weldPayConfig = $weldPayConfig;
     }
 
-
     /**
+     * @param Transaction $transaction
+     * @return mixed
      * @throws WeldPayMethodCallException
      */
     public function generateTransactionUrl(Transaction $transaction)
@@ -41,7 +42,6 @@ class WeldPayConnector
         $generateTransactionUrl = $this->weldPayConfig->getHost() . '/gateway/generate-transaction';
 
         try {
-
             $body = [
                 'Lang' => $transaction->getLang(),
                 'Buyer' => [
@@ -74,12 +74,13 @@ class WeldPayConnector
             ];
             $request = $this->client->post($generateTransactionUrl, [
                 'headers' => [
-                    'Authorization:Basic ' . base64_encode($this->weldPayConfig->getClientId() . ":" . $this->weldPayConfig->getClientSecret())
+                    'Authorization' => $this->generateCredentials()
                 ],
                 'json' => $body
             ]);
             $response = json_decode($request->getBody()->getContents(), true);
-            print_r($response);
+
+            return $response;
 
         } catch (\Exception $exception) {
             throw new WeldPayMethodCallException($generateTransactionUrl, $exception->getMessage());
@@ -87,5 +88,82 @@ class WeldPayConnector
 
     }
 
+    /**
+     * @return string
+     */
+    private function generateCredentials(): string
+    {
+        return 'Basic ' . base64_encode(
+                $this->weldPayConfig->getClientId() . ":" .
+                $this->weldPayConfig->getClientSecret()
+            );
+    }
+
+    /**
+     * @param string $transactionId
+     * @return CheckStatusResponse
+     * @throws WeldPayMethodCallException
+     */
+    public function checkTransactionStatusByTransactionId(string $transactionId): CheckStatusResponse
+    {
+        $checkTransactionStatusUrl = $this->weldPayConfig->getHost() . '/gateway/transaction-status/' . $transactionId;
+        try {
+            $request = $this->client->post($checkTransactionStatusUrl, [
+                'headers' => [
+                    'Authorization' => $this->generateCredentials()
+                ],
+            ]);
+            $response = json_decode($request->getBody()->getContents(), true);
+
+            return new CheckStatusResponse(
+                $response['tokenizedRequestId'],
+                $response['weldpayTransactionId'],
+                $response['State'],
+                $response['StateCode'],
+                $response['isPaymentSuccessful'],
+                $response['orderAmount'],
+                $response['shippingAmount'],
+                $response["totalAmount"],
+                new \DateTime($response['lastUpdate'])
+            );
+
+        } catch (\Exception $exception) {
+            throw new WeldPayMethodCallException($checkTransactionStatusUrl, $exception->getMessage());
+        }
+    }
+
+    /**
+     * @param string $requestId
+     * @return CheckStatusResponse
+     * @throws WeldPayMethodCallException
+     */
+    public function checkTransactionStatusByRequestId(string $requestId): CheckStatusResponse
+    {
+        $checkTransactionStatusUrl = $this->weldPayConfig->getHost() . '/gateway/transaction-status?=' . $requestId;
+        try {
+            $request = $this->client->post($checkTransactionStatusUrl, [
+                'headers' => [
+                    'Authorization' => $this->generateCredentials()
+                ],
+            ]);
+
+            $response = json_decode($request->getBody()->getContents(), true);
+
+            return new CheckStatusResponse(
+                $requestId,
+                $response['weldpayTransactionId'],
+                $response['State'],
+                $response['StateCode'],
+                $response['isPaymentSuccessful'],
+                $response['orderAmount'],
+                $response['shippingAmount'],
+                $response["totalAmount"],
+                new \DateTime($response['lastUpdate'])
+            );
+
+        } catch (\Exception $exception) {
+            throw new WeldPayMethodCallException($checkTransactionStatusUrl, $exception->getMessage());
+        }
+    }
 
 }
