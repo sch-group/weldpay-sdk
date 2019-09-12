@@ -6,6 +6,9 @@ namespace WeldPaySdk\Components;
 
 class Transaction
 {
+    const AVAILABLE_LANGUAGES = [
+      'it', 'en', 'de', 'fr', 'es'
+    ];
     /**
      * @var string
      */
@@ -192,6 +195,6 @@ class Transaction
      */
     public function getLang(): string
     {
-        return $this->lang;
+        return in_array($this->lang, self::AVAILABLE_LANGUAGES) ? $this->lang : "en";
     }
 }

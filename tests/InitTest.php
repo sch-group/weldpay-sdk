@@ -1,6 +1,6 @@
 <?php
 
-namespace PickPointSdk\Tests;
+namespace WeldPaySdk\Tests;
 
 use Matomo\Ini\IniReader;
 use PHPUnit\Framework\TestCase;
@@ -26,11 +26,6 @@ class InitTest extends TestCase
         $weldPayConfig = new WeldPayConfig($config['host'], $config['client_id'], $config['client_secret']);
         $this->client = new WeldPayConnector($weldPayConfig);
 
-    }
-
-    public function testInit()
-    {
-        $this->createInvoice();
     }
 
     /**
@@ -76,7 +71,7 @@ class InitTest extends TestCase
             $callbackUrl
         );
 
-        $this->client->generateTransactionUrl($transaction);
+        return $this->client->generateTransactionUrl($transaction);
     }
 
 }

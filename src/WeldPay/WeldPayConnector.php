@@ -78,7 +78,8 @@ class WeldPayConnector
                 ],
                 'json' => $body
             ]);
-            $response = json_decode($request->getBody()->getContents(), true);
+
+            $response = $request->getBody()->getContents();
 
             return $response;
 
@@ -139,7 +140,7 @@ class WeldPayConnector
      */
     public function checkTransactionStatusByRequestId(string $requestId): CheckStatusResponse
     {
-        $checkTransactionStatusUrl = $this->weldPayConfig->getHost() . '/gateway/transaction-status?=' . $requestId;
+        $checkTransactionStatusUrl = $this->weldPayConfig->getHost() . '/gateway/transaction-status?r_id=' . $requestId;
         try {
             $request = $this->client->post($checkTransactionStatusUrl, [
                 'headers' => [
