@@ -114,18 +114,21 @@ class WeldPayConnector
                     'Authorization' => $this->generateCredentials()
                 ],
             ]);
-            $response = json_decode($request->getBody()->getContents(), true);
+            $jsonResponse = $request->getBody()->getContents();
+            $response = json_decode($jsonResponse, true);
 
             return new CheckStatusResponse(
-                $response['tokenizedRequestId'],
+                $requestId,
                 $response['weldpayTransactionId'],
-                $response['State'],
-                $response['StateCode'],
+                $response['state'],
+                $response['stateCode'],
                 $response['isPaymentSuccessful'],
                 $response['orderAmount'],
                 $response['shippingAmount'],
                 $response["totalAmount"],
-                new \DateTime($response['lastUpdate'])
+                new \DateTime($response['lastUpdate']),
+                $jsonResponse,
+                ""
             );
 
         } catch (\Exception $exception) {
@@ -147,7 +150,8 @@ class WeldPayConnector
                     'Authorization' => $this->generateCredentials()
                 ],
             ]);
-            $response = json_decode($request->getBody()->getContents(), true);
+            $jsonResponse = $request->getBody()->getContents();
+            $response = json_decode($jsonResponse, true);
 
             return new CheckStatusResponse(
                 $requestId,
@@ -158,7 +162,9 @@ class WeldPayConnector
                 $response['orderAmount'],
                 $response['shippingAmount'],
                 $response["totalAmount"],
-                new \DateTime($response['lastUpdate'])
+                new \DateTime($response['lastUpdate']),
+                $jsonResponse,
+                ""
             );
 
         } catch (\Exception $exception) {

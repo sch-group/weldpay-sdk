@@ -56,6 +56,11 @@ class CheckStatusResponse
     private $error;
 
     /**
+     * @var string
+     */
+    private $response;
+
+    /**
      * CheckStatusResponse constructor.
      * @param string $requestId
      * @param string $weldPayTransactionId
@@ -66,10 +71,21 @@ class CheckStatusResponse
      * @param float $shippingAmount
      * @param float $totalAmount
      * @param \DateTime $lastUpdate
+     * @param string|null $response
      * @param string $error
      */
-    public function __construct(string $requestId, string $weldPayTransactionId, string $state, int $stateCode, bool $isPaymentSuccessful, float $orderAmount, float $shippingAmount, float $totalAmount, \DateTime $lastUpdate, string $error = null)
-    {
+    public function __construct(
+        string $requestId,
+        string $weldPayTransactionId,
+        string $state, int $stateCode,
+        bool $isPaymentSuccessful,
+        float $orderAmount,
+        float $shippingAmount,
+        float $totalAmount,
+        \DateTime $lastUpdate,
+        string $response = null,
+        string $error = null
+    ) {
         $this->requestId = $requestId;
         $this->weldPayTransactionId = $weldPayTransactionId;
         $this->state = $state;
@@ -80,6 +96,7 @@ class CheckStatusResponse
         $this->totalAmount = $totalAmount;
         $this->lastUpdate = $lastUpdate;
         $this->error = $error;
+        $this->response = $response;
     }
 
     /**
@@ -160,6 +177,14 @@ class CheckStatusResponse
     public function getError(): string
     {
         return $this->error;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponse(): ?string
+    {
+        return $this->response;
     }
 
 }
