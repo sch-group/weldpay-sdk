@@ -10,12 +10,11 @@ class CheckStatusTest extends InitTest
 {
     public function testCheckStatus()
     {
-        $link = $this->createInvoice();
 
-        preg_match_all('!\d+!', $link, $matches);
-
-        $requestId = $matches[0][0];
+        $requestId = "137789-MQZp1BxOAvoElBzv6lwc2bNJ0gzOQM38WpH4LDFPa8w%3D";
 
         $checkStatusResponse = $this->client->checkTransactionStatusByRequestId($requestId);
+
+        $this->assertNotEmpty($checkStatusResponse->getTotalAmount());
     }
 }

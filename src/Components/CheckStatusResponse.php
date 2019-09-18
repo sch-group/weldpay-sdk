@@ -82,4 +82,84 @@ class CheckStatusResponse
         $this->error = $error;
     }
 
+    /**
+     * @return string
+     */
+    public function getRequestId(): string
+    {
+        return $this->requestId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWeldPayTransactionId(): string
+    {
+        return $this->weldPayTransactionId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStateCode(): int
+    {
+        return $this->stateCode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPaymentSuccessful(): bool
+    {
+        return $this->isPaymentSuccessful;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOrderAmount(): float
+    {
+        return $this->orderAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getShippingAmount(): float
+    {
+        return $this->shippingAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalAmount(): float
+    {
+        return $this->totalAmount;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastUpdate(): \DateTime
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->error;
+    }
+
 }

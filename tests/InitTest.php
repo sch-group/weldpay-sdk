@@ -33,7 +33,7 @@ class InitTest extends TestCase
      */
     protected function createInvoice()
     {
-        $orderNumber = "order_number: 123456";
+        $orderNumber = "TEST: 123456";
 
         $address = new Address(
             "20132",
@@ -41,10 +41,11 @@ class InitTest extends TestCase
             "MI",
             "via Roma, 18A"
         );
+
         $shippingAddress = new Address();
         $buyer = new Buyer(
-            "Mario",
-            "Rossi",
+            "TEST",
+            "TEST",
             "mario.rossi@email.it",
             $address,
             $shippingAddress

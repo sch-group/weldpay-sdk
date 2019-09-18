@@ -80,7 +80,7 @@ class WeldPayConnector
             ]);
 
             $response = $request->getBody()->getContents();
-
+            echo $response;
             return $response;
 
         } catch (\Exception $exception) {
@@ -147,14 +147,13 @@ class WeldPayConnector
                     'Authorization' => $this->generateCredentials()
                 ],
             ]);
-
             $response = json_decode($request->getBody()->getContents(), true);
 
             return new CheckStatusResponse(
                 $requestId,
                 $response['weldpayTransactionId'],
-                $response['State'],
-                $response['StateCode'],
+                $response['state'],
+                $response['stateCode'],
                 $response['isPaymentSuccessful'],
                 $response['orderAmount'],
                 $response['shippingAmount'],
