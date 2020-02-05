@@ -79,9 +79,7 @@ class WeldPayConnector
                 'json' => $body
             ]);
 
-            $response = $request->getBody()->getContents();
-            echo $response;
-            return $response;
+            return $request->getBody()->getContents();
 
         } catch (\Exception $exception) {
             throw new WeldPayMethodCallException($generateTransactionUrl, $exception->getMessage());
